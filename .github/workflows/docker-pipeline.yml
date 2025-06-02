@@ -33,14 +33,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
 
-    - name: Build and export to local tar (for Trivy scan)
+    - name: Build and export amd64 image (for Trivy scan)
       run: |
         docker buildx build \
-          --platform linux/amd64,linux/arm64 \
+          --platform linux/amd64 \
           --cache-from type=registry,ref=${{ env.CACHE_IMAGE }} \
           --cache-to type=registry,ref=${{ env.CACHE_IMAGE }},mode=max \
-          --output=type=oci,dest=image.tar \
+          --output=type=docker,dest=image.tar \
           .
+
 
     - name: Scan image with Trivy
       uses: aquasecurity/trivy-action@master
